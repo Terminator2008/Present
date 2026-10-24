@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<title>С Днём рождения, мама!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    min-height: 100vh;
+    min-height: 100dvh; /* корректно на мобильных */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #fff;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease, visibility 0.8s;
+  }
+  .screen.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Звёзды на фоне */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  h1 {
+    font-size: clamp(1.6rem, 6vw, 3.2rem);
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #f6d365, #fda085, #f6d365);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 4s linear infinite;
+    line-height: 1.2;
+  }
+  @keyframes shine {
+    to { background-position: 200% center; }
+  }
+  p {
+    font-size: clamp(0.95rem, 3.2vw, 1.3rem);
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+  }
+  button {
+    font-family: inherit;
+    font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+    padding: 14px 32px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #f6d365, #fda085);
+    color: #1a1a2e;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(253, 160, 133, 0.4);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    max-width: 90vw;
+  }
+  button:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 30px rgba(253, 160, 133, 0.7);
+  }
+  button:active {
+    transform: scale(0.98);
+  }
+
+  /* Коробка подарка */
+  .gift-box {
+    font-size: 8rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+    animation: bounce 1.5s infinite;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .gift-box:hover { transform: scale(1.1); }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  .gift-opened {
+    animation: none !important;
+  }
+  .gift-box.caught {
+    animation: none !important;
+    transition: transform 0.4s ease;
+  }
+
+  #screen3 { overflow: hidden; }
+
+  .gift-subtitle {
+    margin-top: 18px;
+    font-size: clamp(0.9rem, 3vw, 1rem);
+    color: #f6d365;
+    min-height: 1.5em;
+    transition: opacity 0.3s;
+    font-style: italic;
+    padding: 0 10px;
+  }
+
+  .gift-reveal {
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-top: 20px;
+    max-width: 600px;
+    width: 100%;
+    padding: 0 10px;
+  }
+  .gift-reveal.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Конфетти */
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -20px;
+    pointer-events: none;
+    z-index: 100;
+  }
+  @keyframes fall {
+    to {
+      transform: translateY(110vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  /* === Мобильная адаптация === */
+  @media (max-width: 600px) {
+    .gift-box {
+      font-size: 5rem;
+    }
+    .screen {
+      padding: 20px 16px;
+    }
+    h1 {
+      margin-bottom: 14px;
+    }
+    p {
+      margin-bottom: 16px;
+    }
+    button {
+      padding: 13px 26px;
+    }
+    .gift-subtitle {
+      margin-top: 14px;
+    }
+  }
+
+  /* Совсем узкие экраны (старые телефоны) */
+  @media (max-width: 360px) {
+    .gift-box {
+      font-size: 4rem;
+    }
+    h1 {
+      font-size: 1.4rem;
+    }
+  }
+
+  /* Альбомная ориентация на телефоне */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .gift-box {
+      font-size: 4rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<!-- Экран 1: Заставка -->
+<div class="screen active" id="screen1">
+  <h1>С Днём рождения, мама! 💐</h1>
+  <p>Я приготовил для тебя маленький сюрприз.<br>Нажми на кнопку, чтобы открыть.</p>
+  <button onclick="nextScreen(2)">Открыть поздравление ✨</button>
+</div>
+
+<!-- Экран 2: Поздравление -->
+<div class="screen" id="screen2">
+  <h1>Мамочка, с праздником!</h1>
+  <p>
+    Спасибо за твою любовь, тепло и заботу, которые ты даришь каждый день.<br>
+    Пусть этот год принесёт тебе много радости, здоровья и счастливых моментов.<br>
+    Ты — самое дорогое, что у меня есть. ❤️
+  </p>
+  <button onclick="nextScreen(3)">А теперь подарок 🎁</button>
+</div>
+
+<!-- Экран 3: Подарок -->
+<div class="screen" id="screen3">
+  <h1 id="giftTitle">Твой подарок здесь!</h1>
+  <div class="gift-box" id="giftBox">🎁</div>
+  <div class="gift-subtitle" id="giftSubtitle">Нажми на коробку, чтобы открыть... если поймаешь 😉</div>
+  
+  <div class="gift-reveal" id="giftReveal">
+    <p style="font-size:1.1rem; margin-bottom: 15px;">Подарок ждёт тебя в этом конверте... 💌</p>
+    
+    <!-- Тут твой код, который ты просил вставить -->
+    <p style="font-size:1.3rem; font-weight: bold; color:#f6d365; padding: 15px; border: 2px dashed #f6d365; border-radius: 10px; display: inline-block;">
+      BUFP-SDWY-HPPS-CAV
+    </p>
+    <p style="font-size:1rem; color:#e0e0e0; margin-top: 10px;">Что же это такое? 🤔</p>
+    
+    <div>
+      <button onclick="nextScreen(4)" style="margin-top:20px;">Финальный салют 🎆</button>
+    </div>
+  </div>
+</div>
+
+<!-- Экран 4: Финал -->
+<div class="screen" id="screen4">
+  <h1>С Днём рождения! 🎉</h1>
+  <p>Целую крепко. Твой сын Даниил</p>
+  <button onclick="location.reload()">Ещё раз 🔄</button>
+</div>
+
+<script>
+  // Звёзды
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 3 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    starsContainer.appendChild(star);
+  }
+
+  // Переключение экранов
+  function nextScreen(num) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen' + num).classList.add('active');
+    if (num === 3) startGiftGame();
+    if (num === 4) launchConfetti();
+  }
+
+  // === Подарок-беглец с таймером ===
+  const giftBox = document.getElementById('giftBox');
+  const giftTitle = document.getElementById('giftTitle');
+  const subtitle = document.getElementById('giftSubtitle');
+
+  const RUN_TIME = 10;         // секунд беготни
+  let timeLeft = RUN_TIME;
+  let caught = false;
+  let gameStarted = false;
+  let timerInterval = null;
+
+  const teasers = [
+    'Поймай меня! 😜',
+    'Ага, не тут-то было! 🏃‍♂️',
+    'Ещё разок! 😄',
+    'Куда? Я тут! 😆',
+    'Не догонишь! 😎',
+    'Мимо! 🙈',
+    'Я быстрый! ⚡',
+    'Ну ещё чуть-чуть... 😏'
+  ];
+
+  // Случайное перемещение коробки
+  function runAway() {
+    const rect = giftBox.getBoundingClientRect();
+    const padding = 15;
+    const maxX = window.innerWidth - rect.width - padding * 2;
+    const maxY = window.innerHeight - rect.height - padding * 2;
+
+    let newLeft, newTop;
+    const currentLeft = rect.left;
+    const currentTop = rect.top;
+
+    for (let i = 0; i < 10; i++) {
+      newLeft = Math.random() * Math.max(maxX, 1) + padding;
+      newTop = Math.random() * Math.max(maxY, 1) + padding;
+      const dx = newLeft - currentLeft;
+      const dy = newTop - currentTop;
+      const minDist = window.innerWidth < 500 ? 120 : 200;
+      if (Math.hypot(dx, dy) > minDist) break;
+    }
+
+    giftBox.style.position = 'fixed';
+    giftBox.style.left = newLeft + 'px';
+    giftBox.style.top = newTop + 'px';
+    giftBox.style.transform = 'none';
+  }
+
+  // Запуск игры
+  function startGiftGame() {
+    if (gameStarted) return;
+    gameStarted = true;
+    timeLeft = RUN_TIME;
+
+    subtitle.textContent = `У тебя ${RUN_TIME} секунд, чтобы поймать! ⏱️`;
+
+    timerInterval = setInterval(() => {
+      if (caught) return;
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        catchGift(true);
+      } else {
+        subtitle.textContent = `Осталось ${timeLeft} сек... ${teasers[Math.floor(Math.random() * teasers.length)]}`;
+      }
+    }, 1000);
+  }
+
+  // Поймали / сдался
+  function catchGift(byTime) {
+    if (caught) return;
+    caught = true;
+    clearInterval(timerInterval);
+
+    giftBox.textContent = '💝';
+    giftBox.classList.add('caught', 'gift-opened');
+    giftTitle.textContent = byTime ? 'Ладно, сдаюсь! 🏳️' : 'Ура, поймал(а)! 🎉';
+    subtitle.textContent = byTime ? 'Ты победила! Подарок твой 💝' : 'Подарок твой! 💝';
+
+    setTimeout(() => {
+      document.getElementById('giftReveal').classList.add('show');
+    }, 400);
+    launchConfetti();
+  }
+
+  // Клик по коробке
+  giftBox.addEventListener('click', () => {
+    if (caught) return;
+    runAway();
+    subtitle.textContent = teasers[Math.floor(Math.random() * teasers.length)];
+    giftBox.animate(
+      [{ transform: 'rotate(-10deg)' }, { transform: 'rotate(10deg)' }, { transform: 'rotate(0)' }],
+      { duration: 300 }
+    );
+  });
+
+  // Наведение мыши (убегает)
+  giftBox.addEventListener('mouseenter', () => {
+    if (caught) return;
+    runAway();
+  });
+
+  // Конфетти
+  function launchConfetti() {
+    const colors = ['#f6d365', '#fda085', '#ff6b6b', '#4ecdc4', '#a29bfe', '#fff'];
+    const count = window.innerWidth < 500 ? 70 : 120;
+    for (let i = 0; i < count; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.width = (Math.random() * 8 + 6) + 'px';
+      c.style.height = (Math.random() * 8 + 6) + 'px';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.animation = `fall ${Math.random() * 2 + 2}s linear forwards`;
+      c.style.animationDelay = Math.random() * 1.5 + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }
+  }
+</script>
+</body>
+</html>
