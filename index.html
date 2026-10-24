@@ -80,7 +80,7 @@
     font-size: clamp(0.95rem, 3.2vw, 1.3rem);
     line-height: 1.7;
     max-width: 600px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     color: #e0e0e0;
   }
   button {
@@ -157,13 +157,6 @@
     opacity: 1;
     transform: scale(1);
   }
-  .gift-reveal img {
-    max-width: 100%;
-    max-height: 300px;
-    border-radius: 15px;
-    margin-bottom: 15px;
-    object-fit: cover;
-  }
 
   /* Конфетти */
   .confetti {
@@ -193,16 +186,13 @@
       margin-bottom: 14px;
     }
     p {
-      margin-bottom: 22px;
+      margin-bottom: 16px;
     }
     button {
       padding: 13px 26px;
     }
     .gift-subtitle {
       margin-top: 14px;
-    }
-    .gift-reveal img {
-      max-height: 220px;
     }
   }
 
@@ -239,7 +229,7 @@
 <!-- Экран 1: Заставка -->
 <div class="screen active" id="screen1">
   <h1>С Днём рождения, мама! 💐</h1>
-  <p>Я приготовил(а) для тебя маленький сюрприз.<br>Нажми на кнопку, чтобы открыть.</p>
+  <p>Я приготовил для тебя маленький сюрприз.<br>Нажми на кнопку, чтобы открыть.</p>
   <button onclick="nextScreen(2)">Открыть поздравление ✨</button>
 </div>
 
@@ -259,18 +249,26 @@
   <h1 id="giftTitle">Твой подарок здесь!</h1>
   <div class="gift-box" id="giftBox">🎁</div>
   <div class="gift-subtitle" id="giftSubtitle">Нажми на коробку, чтобы открыть... если поймаешь 😉</div>
+  
   <div class="gift-reveal" id="giftReveal">
-    <p style="font-size:1.1rem;">Подарок ждёт тебя в этом конверте... 💌</p>
-    <!-- Замени на своё фото: <img src="photo.jpg" alt="Подарок"> -->
-    <p style="font-size:1rem; color:#f6d365;">Замени этот текст на описание подарка, сертификата или фото!</p>
-    <button onclick="nextScreen(4)" style="margin-top:20px;">Финальный салют 🎆</button>
+    <p style="font-size:1.1rem; margin-bottom: 15px;">Подарок ждёт тебя в этом конверте... 💌</p>
+    
+    <!-- Тут твой код, который ты просил вставить -->
+    <p style="font-size:1.3rem; font-weight: bold; color:#f6d365; padding: 15px; border: 2px dashed #f6d365; border-radius: 10px; display: inline-block;">
+      BUFP-SDWY-HPPS-CAV
+    </p>
+    <p style="font-size:1rem; color:#e0e0e0; margin-top: 10px;">Что же это такое? 🤔</p>
+    
+    <div>
+      <button onclick="nextScreen(4)" style="margin-top:20px;">Финальный салют 🎆</button>
+    </div>
   </div>
 </div>
 
 <!-- Экран 4: Финал -->
 <div class="screen" id="screen4">
   <h1>С Днём рождения! 🎉</h1>
-  <p>Целую крепко. Твой(я) [Имя]</p>
+  <p>Целую крепко. Твой сын Даниил</p>
   <button onclick="location.reload()">Ещё раз 🔄</button>
 </div>
 
@@ -315,11 +313,11 @@
     'Куда? Я тут! 😆',
     'Не догонишь! 😎',
     'Мимо! 🙈',
-    'Я быстрый(ая)! ⚡',
+    'Я быстрый! ⚡',
     'Ну ещё чуть-чуть... 😏'
   ];
 
-  // Случайное перемещение коробки (с учётом размеров экрана)
+  // Случайное перемещение коробки
   function runAway() {
     const rect = giftBox.getBoundingClientRect();
     const padding = 15;
@@ -335,7 +333,6 @@
       newTop = Math.random() * Math.max(maxY, 1) + padding;
       const dx = newLeft - currentLeft;
       const dy = newTop - currentTop;
-      // На маленьких экранах требуем меньший отскок
       const minDist = window.innerWidth < 500 ? 120 : 200;
       if (Math.hypot(dx, dy) > minDist) break;
     }
@@ -346,7 +343,7 @@
     giftBox.style.transform = 'none';
   }
 
-  // Запуск игры при входе на экран 3
+  // Запуск игры
   function startGiftGame() {
     if (gameStarted) return;
     gameStarted = true;
@@ -359,7 +356,7 @@
       timeLeft--;
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
-        catchGift(true); // сдался по времени
+        catchGift(true);
       } else {
         subtitle.textContent = `Осталось ${timeLeft} сек... ${teasers[Math.floor(Math.random() * teasers.length)]}`;
       }
@@ -383,7 +380,7 @@
     launchConfetti();
   }
 
-  // Клик/тап по коробке
+  // Клик по коробке
   giftBox.addEventListener('click', () => {
     if (caught) return;
     runAway();
@@ -394,7 +391,7 @@
     );
   });
 
-  // На десктопе — убегает при наведении (на телефоне просто не сработает)
+  // Наведение мыши (убегает)
   giftBox.addEventListener('mouseenter', () => {
     if (caught) return;
     runAway();
@@ -403,7 +400,7 @@
   // Конфетти
   function launchConfetti() {
     const colors = ['#f6d365', '#fda085', '#ff6b6b', '#4ecdc4', '#a29bfe', '#fff'];
-    const count = window.innerWidth < 500 ? 70 : 120; // меньше конфетти на телефоне
+    const count = window.innerWidth < 500 ? 70 : 120;
     for (let i = 0; i < count; i++) {
       const c = document.createElement('div');
       c.className = 'confetti';
